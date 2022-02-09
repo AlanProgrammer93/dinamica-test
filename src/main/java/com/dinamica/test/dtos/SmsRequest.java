@@ -9,7 +9,7 @@ public class SmsRequest {
 	private final String to;
 	@NotBlank
 	private final String message;
-	
+	@NotBlank
 	private final String token;
 
 	public SmsRequest(@JsonProperty("to") String to, @JsonProperty("message") String message, @JsonProperty("token") String token) {

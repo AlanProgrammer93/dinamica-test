@@ -3,10 +3,9 @@ package com.dinamica.test.controllers;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -47,38 +46,40 @@ public class TwilioSmsController implements ITwilioSmsController {
 		 */
 
 		String data = otp + "." + String.valueOf(to);
-		String encodedData = passwordEncoder.encode(data);
-		
+
 		Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
-		String access_token = JWT.create()
-				.withSubject(data)
-				.withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 * 1000))
-				.sign(algorithm);
+		String access_token = JWT.create().withSubject(data)
+				.withExpiresAt(new Date(System.currentTimeMillis() + 60 * 60 * 1000)).sign(algorithm);
 
 		HashMap<String, String> map = new HashMap<>();
-		map.put("hash", encodedData);
-		map.put("otp", otp);
 		map.put("access_token", access_token);
 		return map;
 	}
 
 	@Override
 	@PostMapping(path = "/check")
-	public Boolean sendVerified(SmsRequest smsRequest) {
+	public ResponseEntity<?> sendVerified(@RequestBody SmsRequest smsRequest) {
 
 		PhoneNumber to = new PhoneNumber(smsRequest.getTo());
 		String otp = smsRequest.getMessage();
 		String token = smsRequest.getToken();
 
-		
 		Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
-		JWTVerifier verifier = JWT.require(algorithm).build();
-		DecodedJWT decodedJWT = verifier.verify(token); 
-		String username = decodedJWT.getSubject();
-		
-		System.out.println(username);
 
-		return true;
+		JWTVerifier verifier = JWT.require(algorithm).build();
+		DecodedJWT decodedJWT = verifier.verify(token);
+		String tokenDecoded = decodedJWT.getSubject();
+
+		String[] dataDecoded = tokenDecoded.split("\\.");
+
+		if (dataDecoded[0].equals(otp) && dataDecoded[1].equals(to.toString())) {
+			// return true;
+			return ResponseEntity.ok("OK!");
+		} else {
+			// return false;
+			return ResponseEntity.badRequest().body("CODIGO INVALIDO");
+		}
+
 	}
 
 }

@@ -37,7 +37,6 @@ public class UserController {
 		if(user == null) {
 			return ResponseEntity.ok("OK!");
 		} else {
-			//return ResponseEntity.status(HttpStatus.CREATED);
 			return ResponseEntity
                     .badRequest()
                     .body("YA EXISTE EL DNI");
