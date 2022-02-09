@@ -41,9 +41,15 @@ public class UserService implements UserDetailsService {
 		user.setPassword(encodedPassword);
 	}
 	
-	public boolean isEmailUnique(String email) {
+	public User isEmailUnique(String email) {
 		User userByEmail = userRepo.getUserByEmail(email);
-		return userByEmail == null;
+		return userByEmail;
+	}
+	
+	public User isDniUnique(String dni) {
+		Long Dni = Long.parseLong(dni);
+		User userByDni = userRepo.getUserByDni(Dni);
+		return userByDni;
 	}
 
 	@Override

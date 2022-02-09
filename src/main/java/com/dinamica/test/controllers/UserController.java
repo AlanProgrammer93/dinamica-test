@@ -2,6 +2,7 @@ package com.dinamica.test.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,8 +17,31 @@ public class UserController {
 	private UserService service;
 	
 	@PostMapping("/users/check_email")
-	public String checkDuplicateEmail(@Param("email") String email) {
-		return service.isEmailUnique(email) ? "OK" : "DUPLICATED";
+	public ResponseEntity<?> checkDuplicateEmail(@Param("email") String email) {
+		User user = service.isEmailUnique(email);
+		
+		if(user == null) {
+			return ResponseEntity.ok("OK!");
+		} else {
+			//return ResponseEntity.status(HttpStatus.CREATED);
+			return ResponseEntity
+                    .badRequest()
+                    .body("YA EXISTE EL EMAIL");
+		}
+	}
+	
+	@PostMapping("/users/check_dni")
+	public ResponseEntity<?> checkDuplicateDni(@Param("dni") String dni) {
+		User user = service.isDniUnique(dni);
+		
+		if(user == null) {
+			return ResponseEntity.ok("OK!");
+		} else {
+			//return ResponseEntity.status(HttpStatus.CREATED);
+			return ResponseEntity
+                    .badRequest()
+                    .body("YA EXISTE EL DNI");
+		}
 	}
 
 	@PostMapping("/users/save")
@@ -26,4 +50,5 @@ public class UserController {
 		service.saveUser(user);
 		
 	}
+	
 }
