@@ -44,10 +44,10 @@ public class UserController {
 	}
 
 	@PostMapping("/users/save")
-	public void saveUser(User user) {
+	public ResponseEntity<?> saveUser(User user) {
 		System.out.println(user);
 		service.saveUser(user);
-		
+		return ResponseEntity.ok("OK!");
 	}
 	
 }
