@@ -21,6 +21,9 @@ public class User {
 
 	@Column(length = 45, nullable = false)
 	private String firstName;
+	
+	@Column(length = 45, nullable = true)
+	private String middleName;
 
 	@Column(length = 45, nullable = false)
 	private String lastName;
@@ -33,13 +36,13 @@ public class User {
 
 	@Column(length = 20, nullable = false)
 	private String phone;
-
+	
 	@Column(length = 64, nullable = false)
 	private String password;
 
 	@ManyToMany(fetch = FetchType.EAGER)
 	private Collection<Role> roles = new ArrayList<>();
-
+	
 	private boolean enabled;
 
 	public User() {

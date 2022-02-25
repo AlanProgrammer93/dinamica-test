@@ -13,7 +13,6 @@ import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.rest.api.v2010.account.MessageCreator;
 import com.twilio.type.PhoneNumber;
 
-
 @Service("twilio")
 public class TwilioSmsSenderServices implements ISmsSenderServices {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TwilioSmsSenderServices.class);
